@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html>
+  <meta charset="UTF-8"/>
+  <head>
+    <style type="text/css">
+    #main_window{
+    background-color:#f5f5f5;
+    border:1px solid #e5e5e5;
+    }
+    </style>
+  </head>
+  <body>
+    <canvas id="main_window" width="800" height="400"></canvas>
+  </body>
+</html>
+
+<script type="text/javascript">
+    var callback = function() {setInterval(on_enter_frame,30);}
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    script.src = "RBB_collision.js";
+    script.onreadystatechange = callback;
+    script.onload = callback;
+    head.appendChild(script);
+
+    
+    //revoie true ssi le cercle intersecte la bordure
+    //collisionLeftBorder: Cercle --> boolean
+    function collisionLeftBorder(circle){
+      return circle.x-circle.radius<0;
+    }
+
+    //collisionRightBorder: Cercle --> boolean
+    function collisionRightBorder(circle){
+      return circle.x+circle.radius>main_window.width;
+    }
+    
+    //collisionTopBorder: Cercle --> boolean
+    function collisionTopBorder(circle){
+      return circle.y-circle.radius<0;
+    }
+
+    //collisionBottomBorder: Cercle --> boolean
+    function collisionBottomBorder(circle){
+    return circle.y+circle.radius>main_window.height;
+    }
+
+    //collisionCircles: Cercle * Cercle --> boolean
+    //  revoie true ssi les deux cercles s'intersectent
+    function collisionCircles(c1,c2){
+      return Math.pow(c1.x-c2.x,2)+Math.pow(c1.y-c2.y,2)<Math.pow(c1.radius+c2.radius,2);
+    }
+
+    //collisionCircleBox: Cercle * Rectangle --> boolean
+    //  revoie true ssi les deux objets s'intersectent
+    function collisionBlueBox(circle,box){
+      if(circle.x-10>box.x){
+        if(circle.y>box.y&&circle.y<box.y+box.height)return true;
+        /*if(circle.y<box.y){
+          var res = Math.pow(circle.x-box.x,2)+Math.pow(circle.y-box.y,2)<Math.pow(circle.radius,2);
+          return res;
+        }
+        if(circle.y>box.y+box.height){
+          var res = Math.pow(circle.x-box.x,2)+Math.pow(circle.y-box.y,2)<Math.pow(circle.radius+box.height,2);
+          return res;
+        }
+      */}
+      return false;
+    }
+    function collisionRedBox(circle,box){
+      if(circle.x-circle.radius<box.x){
+        if(circle.y>box.y&&circle.y<box.y+box.height)return true;
+      }
+      return false;
+    }
+/****************************************************
+ * Mysterious exercise: Sound effects.              *
+ *   ---SOLUTION---                                 *
+ ****************************************************/
+    //onCollision: void --> void
+    //  cette fonction est appelée lorsqu'une collision est détectectée
+    function onCollision(){
+      //log("bing!");
+      var filepath='waterdrip.mp3'; //example
+      var audio = new Audio();   
+      audio.src = filepath;
+      audio.controls = true;
+      audio.autoplay = true;
+      return;
+    }
+
+    var victory=false;
+    //onWin: void --> void
+    //  cette fonction est appelée lorsque la partie est gngnée
+    function onWin(){
+      if(!victory){
+        var filepath='fieldofflowers.mp3'; //example
+        var audio = new Audio();   
+        audio.src = filepath;
+        audio.controls = true;
+        audio.autoplay = true;
+        //log("victory!");
+        victory=true;
+      }
+      return;
+    }
+
+    function log(msg) {
+      setTimeout(function() {
+        throw new Error(msg);
+      }, 0);
+    }
+
+</script>
